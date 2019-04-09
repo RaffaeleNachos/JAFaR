@@ -358,5 +358,3 @@ void RX5808::serialEnable(const uint8_t _lev) {
   digitalWrite(_csPin, _lev);
   delayMicroseconds(1);
 }
-
-

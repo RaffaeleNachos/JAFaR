@@ -68,5 +68,3 @@ class RX5808
 };
 
 #endif
-
-

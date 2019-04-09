@@ -21,46 +21,21 @@ This file is part of Fatshark© goggle rx module project (JAFaR).
 #define const_h
 
 #define FORCE_FIRST_MENU_ITEM //force always the first menu item (last freq used)
-//#define STANDALONE //NO GOGGLES - TO BE TESTED
+#define STANDALONE
 
-//ONLY ONE OF THE FOLLOWING:
-#define USE_DIVERSITY
-//#define USE_OLED
-
-//uncomment this to use the I2C OLED version (PCB 4.1 beta)
-//#define USE_I2C_OLED
-
-//ONLY ONE OF THE FOLLOWING:
 #define USE_48CH
-//#define USE_SCANNER
+#define USE_SCANNER
 
 
 #define CHANNEL_MIN 0
-#ifdef USE_48CH
 #define NUM_BANDS 6
 #define CHANNEL_MAX 48
-#else
-#define NUM_BANDS 5
-#define CHANNEL_MAX 40
-#endif
 
-
-
-//DEBUG STUFF
-//#define DEBUG //to use this: force_first, OLED disabeld, OSD disabled, DEBUG enabled
-//#define ENABLE_RSSILOG
 #define FLIP_SCREEN
 
-#ifndef USE_OLED
-#define USE_OSD //comment this just for debug
-#endif
+#define USE_OSD
 
-
-#ifdef STANDALONE
 #define LOOPTIME 100
-#else
-#define LOOPTIME 1000
-#endif
 
 #define JAFARE_DEBOUCE_TIME 180
 
@@ -81,12 +56,11 @@ This file is part of Fatshark© goggle rx module project (JAFaR).
 #define EEPROM_ADDR_START_LOG 20
 
 #define RX_A 1
-#define RX_B 0
 
 //diplay dependant
 #define D_COL 120
 #define D_ROW 96
-#define MENU_Y_SIZE 12
+#define MENU_Y_SIZE 10
 
 //SPI related
 #define spiDataPin 11
@@ -95,16 +69,12 @@ This file is part of Fatshark© goggle rx module project (JAFaR).
 #define SPI_CSA 10//receiver SPI Select pin
 #define rssiA A2  //RSSI input
 
-#define SPI_CSB 8//receiver SPI Select pin
-#define rssiB A1  //RSSI input
-
 #define SW_CTRL1 5
 #define SW_CTRL2 6
 
 //#define BUZPIN 0 //digitalWrite(BUZPIN, HIGH);TV.delay(50);digitalWrite(BUZPIN, LOW);pinMode(BUZPIN, OUTPUT); //UP digitalWrite(BUZPIN,LOW);
 #define SELECT_OSD {digitalWrite(SW_CTRL1, HIGH);digitalWrite(SW_CTRL2, HIGH);}
 #define SELECT_A {digitalWrite(SW_CTRL1, LOW);  digitalWrite(SW_CTRL2, HIGH);}
-#define SELECT_B {digitalWrite(SW_CTRL1, HIGH);  digitalWrite(SW_CTRL2, LOW);}
 
 #define RX_HYST 0 //~10%
 
@@ -134,7 +104,7 @@ const uint8_t channelNames[] PROGMEM = {
 };
 
 //menu entry positions
-#define NUM_MENU_ITEMS 8
+#define NUM_MENU_ITEMS 9
 
 #define  LAST_USED_POS 0
 #define  BAND_A_POS 1
@@ -143,8 +113,8 @@ const uint8_t channelNames[] PROGMEM = {
 #define  BAND_F_POS 4
 #define  BAND_R1_POS 5
 #define  BAND_R2_POS 6
-#define  SCANNER_POS 6
-#define  AUTOSCAN_POS 7
+#define  SCANNER_POS 7
+#define  AUTOSCAN_POS 8
 
 uint8_t _init_selection;
 
@@ -152,4 +122,3 @@ uint8_t inline compute_position(const uint8_t _pos) {
   return ((_init_selection + _pos) % NUM_MENU_ITEMS);
 }
 #endif
-

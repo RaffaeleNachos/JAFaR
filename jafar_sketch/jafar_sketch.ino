@@ -29,45 +29,20 @@ uint8_t last_post_switch, flag_first_pos,  in_mainmenu, menu_band, menu_pos;
 float timer;
 uint16_t last_used_freq, last_used_band, last_used_freq_id;
 
-#ifdef USE_OLED
-
-#include "U8glib.h"
-
-#ifdef USE_I2C_OLED
-U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_DEV_0 | U8G_I2C_OPT_NO_ACK | U8G_I2C_OPT_FAST); // Fast I2C / TWI
-#else
-U8GLIB_SSD1306_128X64 u8g(8, A1, A4, 11 , 13); //CLK, MOSI, CS, DC, RESET
-#endif
-
-char j_buf[80];
-
-#endif
-#ifdef USE_OSD
-
 #include <TVout.h>
 #include <fontALL.h>
 
 TVout TV;
 
-#endif //USE OSD
-
 void inline jafar_delay(const uint16_t __delay) {
-#ifdef USE_OSD
   TV.delay(__delay);
-#else
-  delay(__delay);
-#endif
 }
 
 //////********* SETUP ************////////////////////
 void setup() {
-
-#ifdef STANDALONE
   pinMode(CH1, INPUT_PULLUP); //UP
   pinMode(CH2, INPUT_PULLUP); //ENTER
   pinMode(CH3, INPUT_PULLUP); //DOWN
-#endif
-  //menu_pos = 5;
 
   //video out init
   pinMode(SW_CTRL1, OUTPUT);
@@ -81,26 +56,9 @@ void setup() {
   //RX module init
   rx5808.init();
   //rx5808.calibration();
-
-#ifdef USE_OLED
-  oled_init();
-#endif
-#ifdef USE_OSD
+  
   osd_init();
-#endif
-
-#ifdef DEBUG
-  Serial.begin(9600);
-  Serial.println("HELLO WORLD\n");
-
-  int i = 0;
-  Serial.print("get rssi per band:");
-  for (i = 0; i < NUM_BANDS; i++) {
-    Serial.println(rx5808.getMaxValBand(i, 7), DEC);
-  }
-  Serial.println("");
-#endif
-
+  
   flag_first_pos = 0;
 #ifdef FORCE_FIRST_MENU_ITEM
   flag_first_pos = readSwitch();
@@ -117,59 +75,39 @@ void setup() {
   last_used_freq_id = EEPROM.read(EEPROM_ADDR_LAST_FREQ_ID);
   last_used_freq = pgm_read_word_near(channelFreqTable + (8 * last_used_band) + last_used_freq_id); //freq
 
-#ifdef USE_I2C_OLED  //default - set the last freq
-  rx5808.setFreq(last_used_freq); //set the last freq
-#endif
-
   _init_selection = readSwitch();
 }
 
 void autoscan() {
-  int reinit = 1; //only the first time, re-init the oled
   last_post_switch = -1; //force first draw
   timer = TIMER_INIT_VALUE;
   rx5808.scan(); //refresh RSSI
   rx5808.compute_top8();
 
-  while (timer) {
+  while (timer>=0) {
     menu_pos = readSwitch();
 
     if (menu_pos != last_post_switch)  //user moving
       timer = TIMER_INIT_VALUE;
-
-#ifdef USE_OLED
-    oled_autoscan(reinit);
-    reinit = 0;
-#endif
-#ifdef USE_OSD
+    
     osd_autoscan();
-#endif
 
     last_post_switch = menu_pos;
 
     jafar_delay(LOOPTIME);
     timer -= (LOOPTIME / 1000.0);
   }
-
+  
   set_and_wait((rx5808.getfrom_top8(menu_pos) & 0b11111000) / 8, rx5808.getfrom_top8(menu_pos) & 0b111);
 }
 
-#ifdef USE_SCANNER
+
 void scanner_mode() {
-
-#ifdef USE_OLED
-  oled_scanner();
-#endif
-#ifdef USE_OSD
   osd_scanner();
-#endif
-
   timer = TIMER_INIT_VALUE;
 }
-#endif
 
 void loop(void) {
-  uint8_t i;
 
   menu_pos = readSwitch();
 
@@ -183,19 +121,9 @@ void loop(void) {
   if (last_post_switch != menu_pos) {
     flag_first_pos = 0;
     timer = TIMER_INIT_VALUE;
-#ifdef STANDALONE //debounce
+
     jafar_delay(JAFARE_DEBOUCE_TIME);
-#endif
-#ifdef USE_I2C_OLED //changing freq every pression
-    if (!in_mainmenu)
-      rx5808.setFreq(pgm_read_word_near(channelFreqTable + (8 * menu_band) + menu_pos));
-#endif
   }
-#ifndef STANDALONE //no timer in standalone
-  else {
-    timer -= (LOOPTIME / 1000.0);
-  }
-#endif
 
   last_post_switch = menu_pos;
 
@@ -214,11 +142,7 @@ void loop(void) {
       else {
         in_mainmenu = 0;
         menu_band = ((menu_pos - 1 - _init_selection + 8) % 8);
-#ifdef USE_I2C_OLED
-        set_and_wait(menu_band, menu_pos);
-#else
         timer = TIMER_INIT_VALUE;
-#endif
       }
 
       jafar_delay(200);
@@ -232,20 +156,9 @@ void loop(void) {
 
   //time still running
   if (in_mainmenu) { //on main menu
-#ifdef USE_OLED
-    oled_mainmenu(menu_pos);
-#endif
-#ifdef USE_OSD
-    osd_mainmenu(menu_pos) ;
-#endif
+    osd_mainmenu(menu_pos);
   } else { //on submenu
-#ifdef USE_OLED
-    oled_submenu(menu_pos,  menu_band);
-#endif
-#ifdef USE_OSD
     osd_submenu(menu_pos,  menu_band);
-#endif
   }
   jafar_delay(LOOPTIME);
 }
-

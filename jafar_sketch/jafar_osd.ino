@@ -29,7 +29,10 @@ void osd_init(void) {
   //TV.clear_screen();
   TV.select_font(font6x8);
   TV.printPGM(0, 0, PSTR("JAFaR Project 2.0"));
-  TV.printPGM(5,10, PSTR("by MikyM0use"));
+  TV.select_font(font4x6);
+  TV.printPGM(0,10, PSTR("Original FW by MikyM0use"));
+  TV.printPGM(0, 20, PSTR("DockMode MOD by NachosFPV"));
+  TV.select_font(font6x8);
   TV.printPGM(0, 50, PSTR("RSSI MIN"));
   TV.printPGM(0, 60, PSTR("RSSI MAX"));
   TV.print(60, 50, rx5808.getRssiMin(), DEC); //RSSI
@@ -47,7 +50,7 @@ void osd_init(void) {
 void osd_submenu(int8_t menu_pos, uint8_t band) {
   int i;
   TV.clear_screen();
-  TV.draw_rect(1, 1, 100, 94,  WHITE); //draw frame
+  TV.draw_rect(1, 1, 100, 89,  WHITE); //draw frame
 
   //show the channels list and the % RSSI
   for (i = 0; i < 8; i++) {
@@ -58,20 +61,13 @@ void osd_submenu(int8_t menu_pos, uint8_t band) {
   }
 
   TV.draw_rect(9, 2 + menu_pos * MENU_Y_SIZE, 85, 7,  WHITE, INVERT); //current selection
-
-#ifndef STANDALONE
-  //timer
-  //TV.println(92, 3, (int)timer, DEC);
-  osd_display_timer();
-#endif
-
 }
 
 void osd_mainmenu(uint8_t menu_pos) {
   int i;
   TV.clear_screen();
-  TV.select_font(font6x8);
-  TV.draw_rect(1, 1, 100, 94,  WHITE);
+  TV.select_font(font4x6);
+  TV.draw_rect(1, 1, 100, 89,  WHITE);
 
   //last used band,freq
   TV.printPGM(10, 3 + compute_position(LAST_USED_POS) * MENU_Y_SIZE, PSTR("LAST:"));
@@ -84,12 +80,8 @@ void osd_mainmenu(uint8_t menu_pos) {
   TV.printPGM(10, 3 + compute_position(BAND_E_POS) * MENU_Y_SIZE, PSTR("BAND E"));
   TV.printPGM(10, 3 + compute_position(BAND_F_POS) * MENU_Y_SIZE, PSTR("FATSHARK"));
   TV.printPGM(10, 3 + compute_position(BAND_R1_POS) * MENU_Y_SIZE, PSTR("RACEBAND"));
-#ifdef USE_SCANNER
-  TV.printPGM(10, 3 + compute_position(SCANNER_POS) * MENU_Y_SIZE, PSTR("SCANNER"));
-#endif
-#ifdef USE_48CH
   TV.printPGM(10, 3 + compute_position(BAND_R2_POS) * MENU_Y_SIZE, PSTR("RACE2"));
-#endif
+  TV.printPGM(10, 3 + compute_position(SCANNER_POS) * MENU_Y_SIZE, PSTR("SCANNER"));
   TV.printPGM(10, 3 + compute_position(AUTOSCAN_POS) * MENU_Y_SIZE, PSTR("AUTOSCAN"));
 
   for (i = 0; i < NUM_BANDS; i++) {
@@ -98,16 +90,10 @@ void osd_mainmenu(uint8_t menu_pos) {
   }
 
   TV.draw_rect(9, 2 + menu_pos * MENU_Y_SIZE, 85, 7,  WHITE, INVERT); //current selection
-
-#ifndef STANDALONE
-  //header and countdown
-  //TV.println(92, 3, (int)timer, DEC);
-  osd_display_timer();
-#endif
 }
-#ifdef USE_SCANNER
+
 void osd_scanner() {
-  uint8_t s_timer = 5;
+  uint8_t s_timer = 8;
   while (s_timer-- > 0) {
     rx5808.scan();
     TV.clear_screen();
@@ -116,7 +102,6 @@ void osd_scanner() {
     TV.printPGM(5, 87, PSTR("5645"));
     TV.printPGM(45, 87, PSTR("5800"));
     TV.printPGM(85, 87, PSTR("5945"));
-    TV.select_font(font6x8);
     for (int i = CHANNEL_MIN; i < CHANNEL_MAX; i++) {
       uint8_t channelIndex = pgm_read_byte_near(channelList + i); //retrive the value based on the freq order
       uint16_t rssi_norm = constrain(rx5808.getRssi(channelIndex), rx5808.getRssiMin(), rx5808.getRssiMax());
@@ -129,19 +114,11 @@ void osd_scanner() {
     TV.println(92, 3, (int)s_timer, DEC);
     TV.delay(100);
   }
-  s_timer = 9;
 }
-#endif //USE_SCANNER
 
 void osd_autoscan() {
   TV.clear_screen();
   TV.draw_rect(1, 1, 100, 94,  WHITE);
-
-#ifndef STANDALONE
-  //header and countdown
-  //TV.println(92, 3, (int)timer, DEC); //timer
-  osd_display_timer();
-#endif
 
   for (uint8_t i = 0; i < 8; i++) {
     TV.print(10, 3 + i * MENU_Y_SIZE, pgm_read_word_near(channelFreqTable + rx5808.getfrom_top8(i)), DEC); //channel freq
@@ -153,14 +130,4 @@ void osd_autoscan() {
   TV.draw_rect(9, 2 + menu_pos * MENU_Y_SIZE, 85, 7,  WHITE, INVERT); //current selection
 }
 
-void osd_display_timer() {
-  if (timer > 0) {
-    int fh = D_ROW ;
-    int height = ((long)(timer) * 100) * fh / ((int)TIMER_INIT_VALUE * 100);
-    if (height > 0)
-      TV.draw_rect(D_COL - 24, fh - height + 1, 4, height, WHITE, WHITE);
-  }
-}
-
-#endif //not USE_OLED
-
+#endif
