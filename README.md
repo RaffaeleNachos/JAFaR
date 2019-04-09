@@ -7,7 +7,11 @@ at the same time in the menu *raceband 2*, *autoscan* and the *scanner*. With my
 
 It works with external buttons as some pictures down show: https://www.youtube.com/watch?v=tcJVOxDaEJ4
 
-***the code needs refactoring and there's some code that deals with rssi for the diversity mode that needs to be deleted. This is a WIP but all works well.***
+***The code needs refactoring and there's some code that deals with rssi for the diversity mode that needs to be deleted. This is a WIP but all works well.***
+
+<img src="/docs/dockmode1.png" width="50%" height="50%" />
+<img src="/docs/dockmode2.png" width="50%" height="50%" />
+<img src="/docs/dockmode3.png" width="50%" height="50%" />
 
 
 # JAFaR (Just Another Fatshark Receiver Module)
