@@ -5,9 +5,11 @@ It's the "standalone" mode with some bugs fixed.
 The "standalone" had some bugs: like you weren't able to select the band after an "autoscan". Also it was not possible to have
 at the same time in the menu *raceband 2*, *autoscan* and the *scanner*. With my fw mod you have it all.
 
-It works with external buttons as some pictures down show: https://www.youtube.com/watch?v=tcJVOxDaEJ4
+It works with external buttons as some pictures down show.
+Video example (the video is and old realease and shows a glitch in *scanner mode*, the actual firmware doesn't have it) https://www.youtube.com/watch?v=tcJVOxDaEJ4
 
-***The code needs refactoring and there's some code that deals with rssi for the diversity mode that needs to be deleted. This is a WIP but all works well.***
+***The code needs refactoring and there's some code that deals with rssi for the diversity mode that needs to be deleted. This is a WIP but all works well.
+The scanner does not scan raceband 2 and must be coded better, but at least it works! :D***
 
 <img src="/docs/dockmode1.png" width="50%" height="50%" />
 <img src="/docs/dockmode2.png" width="50%" height="50%" />
