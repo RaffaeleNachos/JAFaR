@@ -1,9 +1,8 @@
 # DockMode by Nachos
 I've modified the firmware to fit my needs. I will use the module in a dock station (something like this but DIY https://furiousfpv.com/product_info.php?products_id=451). 
-It's the "standalone" mode with some bugs fixed.
+It's the original "standalone" mode with some bugs fixed.
 **ATTENTION: NO DIVERSITY AND NO OLED SCREEN**
-The "standalone" had some bugs: like you weren't able to select the band after an "autoscan". Also it was not possible to have
-at the same time in the menu *raceband 2*, *autoscan* and the *scanner*. With my fw mod you have it all.
+The original "standalone" had some bugs: like you weren't able to select the band after an "autoscan". Also it was not possible to have at the same time in the menu *raceband 2*, *autoscan* and the *scanner*. With my fw mod you have it all.
 
 It works with external buttons as some pictures down show.
 Video example (the video is and old realease and shows a glitch in *scanner mode*, the actual firmware doesn't have it) https://www.youtube.com/watch?v=tcJVOxDaEJ4
