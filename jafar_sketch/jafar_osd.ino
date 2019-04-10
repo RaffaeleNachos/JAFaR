@@ -102,13 +102,11 @@ void osd_scanner() {
     TV.printPGM(5, 87, PSTR("5645"));
     TV.printPGM(45, 87, PSTR("5800"));
     TV.printPGM(85, 87, PSTR("5945"));
-    for (int i = CHANNEL_MIN; i < CHANNEL_MAX; i++) {
+    for (int i = CHANNEL_MIN; i < CHANNEL_MAX-8; i++) {
       uint8_t channelIndex = pgm_read_byte_near(channelList + i); //retrive the value based on the freq order
       uint16_t rssi_norm = constrain(rx5808.getRssi(channelIndex), rx5808.getRssiMin(), rx5808.getRssiMax());
       rssi_norm = map(rssi_norm, rx5808.getRssiMin(), rx5808.getRssiMax(), 0, 70);
-
-#define START_OSD_FRAME_Y 80
-      TV.draw_rect(10 + 2 * i, START_OSD_FRAME_Y - rssi_norm , 2, rssi_norm, WHITE, WHITE);
+      TV.draw_rect(11 + 2 * i, 80 - rssi_norm , 2, rssi_norm, WHITE, WHITE);
     }
 
     TV.println(92, 3, (int)s_timer, DEC);

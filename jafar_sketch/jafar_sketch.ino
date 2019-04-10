@@ -121,7 +121,6 @@ void loop(void) {
   if (last_post_switch != menu_pos) {
     flag_first_pos = 0;
     timer = TIMER_INIT_VALUE;
-
     jafar_delay(JAFARE_DEBOUCE_TIME);
   }
 
@@ -129,25 +128,22 @@ void loop(void) {
 
   if (timer <= 0) { //end of time for selection
 
-    if (in_mainmenu) { //switch from menu to submenu (band -> frequency)
+    if (in_mainmenu) { //FIRST MENU switch from menu to submenu (band -> frequency)
       if (menu_pos == compute_position(LAST_USED_POS)) //LAST USED
         set_and_wait(last_used_band, last_used_freq_id);
-
-#ifdef USE_SCANNER
       else if (menu_pos == compute_position(SCANNER_POS)) //SCANNER
         scanner_mode();
-#endif
       else if (menu_pos == compute_position(AUTOSCAN_POS)) //AUTOSCAN
         autoscan();
       else {
         in_mainmenu = 0;
-        menu_band = ((menu_pos - 1 - _init_selection + 8) % 8);
+        menu_band = ((menu_pos - 1 - _init_selection + 8) % 8); //here
         timer = TIMER_INIT_VALUE;
       }
 
       jafar_delay(200);
 
-    } else { //if in submenu
+    } else { //SECMENU FREQ if in submenu
       //after selection of band AND freq by the user
       timer = 0;
       set_and_wait(menu_band, menu_pos);
@@ -158,7 +154,7 @@ void loop(void) {
   if (in_mainmenu) { //on main menu
     osd_mainmenu(menu_pos);
   } else { //on submenu
-    osd_submenu(menu_pos,  menu_band);
+    osd_submenu(menu_pos,  menu_band); //here
   }
   jafar_delay(LOOPTIME);
 }
